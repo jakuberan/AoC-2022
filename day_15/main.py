@@ -21,39 +21,56 @@ def get_distance(sens: list, bea: list) -> int:
     return abs(sens[0] - bea[0]) + abs(sens[1] - bea[1])
 
 
-def mark_line(sens: list, dist: int, line: set, y_crd: int) -> set:
+def add_segment(sens: list, dist: int, line: list, y_crd: int) -> list:
     """
-    Add specified row positions where beacon cannot be
+    Add specified line segments where beacon cannot be
     """
     y_dist = abs(sens[1] - y_crd)
-    if y_dist > dist:
-        return line
-    else:
-        for i in range(dist - y_dist + 1):
-            line.add(sens[0] + i)
-            line.add(sens[0] - i)
-        return line
+    if y_dist <= dist:
+        line.append([sens[0] - (dist - y_dist), sens[0] + (dist - y_dist)])
+    return line
 
+
+def segment_length(segments: list) -> int:
+    """
+    Calculate length of all segments on the line
+    """
+    total_len = 0
+    x_low = segments[0][0]
+    x_high = segments[0][1]
+    for seg in segments[1:]:
+        # Overlap with upper line segment
+        if x_high >= seg[0]:
+            x_high = max(x_high, seg[1])
+        else:
+            total_len += x_high - x_low + 1
+            x_low = seg[0]
+            x_high = seg[1]
+    return total_len + (x_high - x_low + 1)
+            
 
 def part1(data_path="input", y_coord=2000000):
     """
     Count the selected row positions which cannot contain a beacon
     """
     sensors, beacons = read_and_process(data_path)
-    line = set()
+    segments = []
     
-    # Mark line positions 
+    # Mark line segments where a beacon cannot be 
     for i in range(len(sensors)):
         distance = get_distance(sensors[i], beacons[i])
-        line = mark_line(sensors[i], distance, line, y_coord)
+        segments = add_segment(sensors[i], distance, segments, y_coord)  
         
+    # Combined segments length
+    segments_len = segment_length(sorted(segments))
+    
     # Count beacons on specified y coordinate
     beacon_on_y = set()
     for bc in beacons:
         if bc[1] == y_coord:
             beacon_on_y.add(bc[0])
     
-    return len(line) - len(beacon_on_y)
+    return segments_len - len(beacon_on_y)
 
 
 def get_edges(sens: list, dist: int) -> list:
@@ -151,8 +168,8 @@ def part2(data_path="input", lim=4000000):
                 if len(lf) > 0:
                     lines_forward.append(lf)
     
-    intersections = []
     # Get line intersections
+    intersections = []
     for lb in lines_backward:
         for lf in lines_forward:
             intersection = get_intersection(lb, lf, lim)
@@ -167,6 +184,6 @@ def part2(data_path="input", lim=4000000):
 
 
 if __name__ == "__main__":
-
+    
     print(f"There are {part1()} positions which cannot contain a beacon")
     print(f"Tuning frequency of distress beacon is {part2()}")
