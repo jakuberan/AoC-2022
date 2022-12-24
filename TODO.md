@@ -11,3 +11,6 @@ Improve speed of both parts by additional pruning (e.g. do not pursue paths that
 
 ### Day 22
 Generalize for various input layouts in part 2
+
+### Day 24
+Change DFS for BFS
