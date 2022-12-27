@@ -22,8 +22,8 @@ def read_and_process(data_path: str):
                 i += 1
         elif len(x.strip()) > 0:
             m = x.strip().split()
-            moves.append([int(m[1]), int(m[3]), int(m[5])])   
-            
+            moves.append([int(m[1]), int(m[3]), int(m[5])])
+
     # Clean up stack
     for i in range(len(stack) - 1, 0, -1):
         if len(stack[i]) == 0:
@@ -35,9 +35,9 @@ def move_crate9001(stack: list, move: list) -> list:
     """
     Performs one single move of crane 9001
     """
-    to_move = stack[move[1] - 1][:move[0]]
+    to_move = stack[move[1] - 1][: move[0]]
     stack[move[2] - 1] = to_move + stack[move[2] - 1]
-    stack[move[1] - 1] = stack[move[1] - 1][move[0]:]
+    stack[move[1] - 1] = stack[move[1] - 1][move[0] :]
     return stack
 
 
@@ -55,11 +55,11 @@ def part1(data_path="input"):
     Crate move by crane 9000
     """
     stack, moves = read_and_process(data_path)
-    
+
     for m in moves:
         stack = move_crate9000(stack, m)
-        
-    return ''.join([s[0] for s in stack])
+
+    return "".join([s[0] for s in stack])
 
 
 def part2(data_path="input"):
@@ -67,11 +67,11 @@ def part2(data_path="input"):
     Crate move by crane 9001
     """
     stack, moves = read_and_process(data_path)
-    
+
     for m in moves:
         stack = move_crate9001(stack, m)
-        
-    return ''.join([s[0] for s in stack])
+
+    return "".join([s[0] for s in stack])
 
 
 if __name__ == "__main__":

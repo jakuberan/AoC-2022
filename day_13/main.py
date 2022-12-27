@@ -51,28 +51,28 @@ def compare_pair(left, right):
                 return False
     return out
 
-    
+
 def part1(data_path="input"):
     """
     Calculate sum of indices of OK pairs
     """
     pairs = read_and_process(data_path)
-    
+
     # Calculate sum of OK pair indices
     out = 0
     for i in range(len(pairs)):
         if compare_pair(pairs[i][0], pairs[i][1]):
             out += 1 + i
-        
+
     return out
 
 
 def part2(data_path="input"):
     """
-    Calculates the number of OK pairs and thus decoder key 
+    Calculates the number of OK pairs and thus decoder key
     """
     pairs = read_and_process(data_path)
-    
+
     # Calculate decode key
     before = [0, 0]
     for i in range(len(pairs)):
@@ -81,13 +81,11 @@ def part2(data_path="input"):
                 before[0] += 1
             elif compare_pair(deepcopy(pairs[i][j]), [[6]]):
                 before[1] += 1
-     
+
     return (before[0] + 1) * (before[0] + before[1] + 2)
-                              
+
 
 if __name__ == "__main__":
 
     print(f"Sum of indices of OK pairs is {part1()}")
     print(f"Decoder key is {part2()}")
-
- 

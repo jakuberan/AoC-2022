@@ -1,4 +1,3 @@
-
 def read_and_process(data_path: str):
     """
     Process and prepare input data
@@ -7,7 +6,7 @@ def read_and_process(data_path: str):
     f = open(data_path, "r")
     out = []
     for x in f:
-        a = [c.split('-') for c in x.strip().split(',')]
+        a = [c.split("-") for c in x.strip().split(",")]
         out.append([int(c) for c in (a[0] + a[1])])
     return out
 
@@ -43,11 +42,11 @@ def part1(data_path="input"):
     """
     data = read_and_process(data_path)
     overlap_full_cnt = 0
-    
+
     # Count overlaps
     for d in data:
         overlap_full_cnt += overlap_full(d)
-        
+
     return overlap_full_cnt
 
 
@@ -57,11 +56,11 @@ def part2(data_path="input"):
     """
     data = read_and_process(data_path)
     overlap_partial_cnt = 0
-    
+
     # Count overlaps
     for d in data:
         overlap_partial_cnt += overlap_partial(d)
-        
+
     return overlap_partial_cnt
 
 

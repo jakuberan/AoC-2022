@@ -8,7 +8,7 @@ def read_and_process(data_path: str):
     f = open(data_path, "r")
     out = []
     for x in f:
-        out.append([c.split(',') for c in x.strip().split(' -> ')])
+        out.append([c.split(",") for c in x.strip().split(" -> ")])
     return out
 
 
@@ -21,7 +21,7 @@ def build_walls(walls, w):
         x_min = min(int(w[i][0]), int(w[i + 1][0]))
         y_max = max(int(w[i][1]), int(w[i + 1][1]))
         y_min = min(int(w[i][1]), int(w[i + 1][1]))
-        
+
         # For each horizontal position add a set of vertical ones
         for x in range(x_min, x_max + 1):
             for y in range(y_min, y_max + 1):
@@ -38,7 +38,7 @@ def sand_add(ws, sand):
     """
     num_above = np.sum(ws < sand)
     return np.insert(ws, num_above, sand)
-        
+
 
 def sand_move(walls: dict, floor=0, pos_x=500, pos_y=0):
     """
@@ -75,13 +75,13 @@ def sand_move(walls: dict, floor=0, pos_x=500, pos_y=0):
             # Fall / place the unit of sand into the current horizontal position
             if num_above == len(walls[pos_x]):
                 if floor > 0:
-                    walls[pos_x] = np.concatenate((
-                        walls[pos_x], np.array([floor - 1, floor])
-                        ))
+                    walls[pos_x] = np.concatenate(
+                        (walls[pos_x], np.array([floor - 1, floor]))
+                    )
                 return walls, (floor > 0)
             else:
                 pos_y = walls[pos_x][num_above] - 1
-                
+
 
 def find_floor(walls: dict) -> int:
     """
@@ -98,16 +98,16 @@ def solve(data_path="input"):
     Number of units of sand before falling off the map / blocking the source
     """
     data = read_and_process(data_path)
-    
+
     # Build all walls
     walls = dict()
     for d in data:
         walls = build_walls(walls, d)
-    
+
     # Convert sets to arrays to better handle queries
     for vertical in walls:
         walls[vertical] = np.array(sorted(list(walls[vertical])))
-        
+
     # Locate floor y coordinate
     floor_y = find_floor(walls)
 
@@ -127,12 +127,12 @@ def solve(data_path="input"):
                 sand_cnt_1 = sand_cnt
                 keep_falling = True
                 floor = floor_y
-        
+
     return sand_cnt_1, sand_cnt
 
 
 if __name__ == "__main__":
-    
+
     part1, part2 = solve()
     print(f"The number of stable sand units is {part1} (no-floor setup)")
     print(f"The number of stable sand units is {part2} (floor setup)")

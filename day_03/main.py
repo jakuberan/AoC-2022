@@ -18,14 +18,14 @@ def get_compartments(rucksack: list) -> list:
     Split rucksack to compartments
     """
     n_items = len(rucksack)
-    return [rucksack[:int(n_items/2)], rucksack[int(n_items/2):]]
+    return [rucksack[: int(n_items / 2)], rucksack[int(n_items / 2) :]]
 
 
 def get_score(char: chr) -> int:
     """
     Calculate score of a single item
     """
-    return low.find(char) + up.find(char) + 2 + 26*(up.find(char) >= 0)
+    return low.find(char) + up.find(char) + 2 + 26 * (up.find(char) >= 0)
 
 
 def part1(data_path="input") -> int:
@@ -38,7 +38,7 @@ def part1(data_path="input") -> int:
         d_comp = get_compartments(d)
         misplaced = (set(d_comp[0]).intersection(set(d_comp[1]))).pop()
         out += get_score(misplaced)
-        
+
     return out
 
 
@@ -63,7 +63,7 @@ def part2(data_path="input"):
         if len(group) == 3:
             out += get_score(get_badge(group))
             group = []
-        
+
     return out
 
 

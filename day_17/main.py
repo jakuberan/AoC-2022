@@ -1,4 +1,3 @@
-
 def read_and_process(data_path: str):
     """
     Process and prepare input data
@@ -6,7 +5,7 @@ def read_and_process(data_path: str):
 
     f = open(data_path, "r")
     for x in f:
-        return [True if c == '>' else False for c in x.strip()]
+        return [True if c == ">" else False for c in x.strip()]
 
 
 def extend_field(field: list, width: int, rows_to_add=10000) -> list:
@@ -16,7 +15,7 @@ def extend_field(field: list, width: int, rows_to_add=10000) -> list:
     for i in range(rows_to_add):
         field.append([True] + [False] * width + [True])
     return field
-    
+
 
 def mark_in_field(rock: list, field: list) -> list:
     """
@@ -54,20 +53,20 @@ def rock_bank() -> dict:
     Generate objects - pair of list as deviations from [0, 0] coordinate
     """
     return {
-        '-': [[0, 0, 0, 0], [3, 4, 5, 6]],
-        '+': [[0, 1, 1, 1, 2], [4, 3, 4, 5, 4]],
-        'J': [[0, 0, 0, 1, 2], [3, 4, 5, 5, 5]],
-        '|': [[0, 1, 2, 3], [3, 3, 3, 3]],
-        'O': [[0, 0, 1, 1], [3, 4, 3, 4]],
-        }
+        "-": [[0, 0, 0, 0], [3, 4, 5, 6]],
+        "+": [[0, 1, 1, 1, 2], [4, 3, 4, 5, 4]],
+        "J": [[0, 0, 0, 1, 2], [3, 4, 5, 5, 5]],
+        "|": [[0, 1, 2, 3], [3, 3, 3, 3]],
+        "O": [[0, 0, 1, 1], [3, 4, 3, 4]],
+    }
 
 
 def print_field(field: list, top: int, bottom=0):
     """
     Print few top lines of the field
     """
-    for i in range(top, bottom-1, -1):
-        print(''.join(['#' if f else '.' for f in field[i]]))
+    for i in range(top, bottom - 1, -1):
+        print("".join(["#" if f else "." for f in field[i]]))
     print()
 
 
@@ -79,7 +78,7 @@ def part1(data_path="input", width=7):
     top_pos = 0
     step = 0
     field = extend_field([[True] * (width + 2)], width)
-    
+
     # Iterate over rocks
     for i in range(int(2022 / 5) + 1):
         rocks = rock_bank()
@@ -93,9 +92,9 @@ def part1(data_path="input", width=7):
                 step += 1
                 can_move, rock, field = move_down(rock, field)
             top_pos = max(top_pos, max(rock[0]))
-            
+
             # Stopping condition
-            if (i == int(2022 / 5)) and (rock_name == '+'):
+            if (i == int(2022 / 5)) and (rock_name == "+"):
                 return top_pos
 
 

@@ -1,4 +1,3 @@
-
 def read_and_process(data_path: str):
     """
     Process and prepare input data
@@ -25,25 +24,25 @@ def walk_tree(tree: dict, node: str) -> float:
         num1 = walk_tree(tree, tree[node][0])
         num2 = walk_tree(tree, tree[node][2])
         # Apply operations
-        if tree[node][1] == '+':
+        if tree[node][1] == "+":
             return num1 + num2
-        elif tree[node][1] == '-':
+        elif tree[node][1] == "-":
             return num1 - num2
-        elif tree[node][1] == '*':
+        elif tree[node][1] == "*":
             return num1 * num2
-        elif tree[node][1] == '/':
+        elif tree[node][1] == "/":
             return num1 / num2
         else:
             print("Unrecognized operation")
-            
-            
+
+
 def part1(data_path="input") -> int:
     """
     Traverse the monkey tree and find root s answer
     """
     data = read_and_process(data_path)
-        
-    return int(walk_tree(data, 'root'))
+
+    return int(walk_tree(data, "root"))
 
 
 def simplify_tree(tree: dict, node: str, hmn: str):
@@ -64,61 +63,61 @@ def simplify_tree(tree: dict, node: str, hmn: str):
         # Apply operations where both numbers are available
         else:
             num_out = None
-            if tree[node][1] == '+':
+            if tree[node][1] == "+":
                 num_out = tree[node][0] + tree[node][2]
-            elif tree[node][1] == '-':
+            elif tree[node][1] == "-":
                 num_out = tree[node][0] - tree[node][2]
-            elif tree[node][1] == '*':
+            elif tree[node][1] == "*":
                 num_out = tree[node][0] * tree[node][2]
-            elif tree[node][1] == '/':
+            elif tree[node][1] == "/":
                 num_out = tree[node][0] / tree[node][2]
             else:
                 print("Unrecognized operation")
             del tree[node]
             return num_out, tree
-        
-        
+
+
 def make_equal(tree: dict, hmn: str) -> float:
     """
     Search for number in selected node which makes the output in root equal
     """
-    node = 'root'
+    node = "root"
     want = None
     while node != hmn:
         num_id = 0 if (type(tree[node][2]) is str) else 2
         num = tree[node][num_id]
-        if node == 'root':
+        if node == "root":
             want = num
         else:
             # Apply reverse operations
-            if tree[node][1] == '+':
+            if tree[node][1] == "+":
                 want = want - num
-            elif tree[node][1] == '-':
+            elif tree[node][1] == "-":
                 if num_id == 0:
                     want = num - want
                 else:
                     want = num + want
-            elif tree[node][1] == '*':
+            elif tree[node][1] == "*":
                 want = want / num
-            elif tree[node][1] == '/':
+            elif tree[node][1] == "/":
                 if num_id == 0:
                     want = num / want
                 else:
                     want = num * want
             else:
-                print("Unrecognized operation") 
+                print("Unrecognized operation")
         node = tree[node][2 - num_id]
     return want
-    
 
-def part2(data_path="input", human_node='humn') -> int:
+
+def part2(data_path="input", human_node="humn") -> int:
     """
     Simplify and then apply reverse operations
     """
     data = read_and_process(data_path)
-    
+
     # Simplify the tree and evaluate all possible nodes
-    _, tree = simplify_tree(data, 'root', human_node)
+    _, tree = simplify_tree(data, "root", human_node)
 
     return int(make_equal(tree, human_node))
 

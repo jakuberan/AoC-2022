@@ -1,4 +1,3 @@
-
 def read_and_process(data_path: str):
     """
     Process and prepare input data
@@ -21,7 +20,7 @@ def part1(data_path="input"):
     Get max calories from the list of all calories
     """
     calories = read_and_process(data_path)
-        
+
     return max(calories)
 
 
@@ -31,7 +30,7 @@ def part2(data_path="input"):
     """
     calories = read_and_process(data_path)
     calories.sort(reverse=True)
-        
+
     return sum(calories[:3])
 
 

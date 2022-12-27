@@ -10,7 +10,7 @@ def read_and_process(data_path: str):
     out = dict()
     for x in f:
         line = x.strip().split()
-        out[line[1]] = [int(line[4][5:-1]), (' '.join(line[9:])).split(', ')]
+        out[line[1]] = [int(line[4][5:-1]), (" ".join(line[9:])).split(", ")]
     return out
 
 
@@ -23,14 +23,14 @@ def get_distance_matrix(valvinfo, valves):
     for i, valve in enumerate(valves):
         for neigh in valvinfo[valve][1]:
             dist[i, valves.index(neigh)] = 1
-            
+
     # Fill distance matrix
     for k in range(len(valves)):
         for i in range(len(valves)):
             for j in range(len(valves)):
                 if dist[i, j] > dist[i, k] + dist[k, j]:
                     dist[i, j] = dist[i, k] + dist[k, j]
-                    
+
     # Remove diagonal
     for i in range(len(valves)):
         dist[i, i] = 0
@@ -38,9 +38,7 @@ def get_distance_matrix(valvinfo, valves):
     return dist
 
 
-def max_output(
-        valvinfo, valves, dists, so_far, time, flow, flow_best, max_time=30
-        ):
+def max_output(valvinfo, valves, dists, so_far, time, flow, flow_best, max_time=30):
     """
     Finds recursively the optimal path to start the valves
     """
@@ -53,30 +51,35 @@ def max_output(
             if 1 + dist_cur + time <= max_time:
                 fcur = (max_time - 1 - dist_cur - time) * valvinfo[neigh][0]
                 flow_future = max_output(
-                    valvinfo, valves, dists, so_far + [neigh], 
-                    time + 1 + dist_cur, flow + fcur, flow_best
-                    )
+                    valvinfo,
+                    valves,
+                    dists,
+                    so_far + [neigh],
+                    time + 1 + dist_cur,
+                    flow + fcur,
+                    flow_best,
+                )
                 flow_best = max(flow_best, flow_future, flow + fcur)
     return flow_best
 
 
-def part1(data_path="input", max_time=30, start='AA'):
+def part1(data_path="input", max_time=30, start="AA"):
     """
     Highest possible pressure to be released in case of a signle worker
     """
     valvinfo = read_and_process(data_path)
     valves = list(valvinfo.keys())
-    
+
     # Create distance matrix
     dist = get_distance_matrix(valvinfo, valves)
     dstart = dist[valves.index(start)]
-    
+
     # Remove valves of zero flow from distance matrix
     for i in range(len(valves) - 1, -1, -1):
         if valvinfo[valves[i]][0] == 0:
             valves.pop(i)
             dist = np.delete(np.delete(dist, i, 0), i, 1)
-            
+
     # Find the best path from start
     fbest = 0
     for i, neigh in enumerate(valvinfo.keys()):
@@ -84,16 +87,14 @@ def part1(data_path="input", max_time=30, start='AA'):
             tcur = dstart[i] + 1
             fcur = valvinfo[neigh][0] * (max_time - tcur)
             fbest = max(
-                fbest,
-                max_output(valvinfo, valves, dist, [neigh], tcur, fcur, fcur)
-                )
+                fbest, max_output(valvinfo, valves, dist, [neigh], tcur, fcur, fcur)
+            )
     return int(fbest)
 
 
 def max_output_2p(
-        valvinfo, valves, dists, so_far, time, prev, flow, flow_best,
-        max_time=26
-        ):
+    valvinfo, valves, dists, so_far, time, prev, flow, flow_best, max_time=26
+):
     """
     Finds recursively the optimal path to start the valves when two workers
     """
@@ -110,39 +111,45 @@ def max_output_2p(
                 fcur = (max_time - time[idx]) * valvinfo[neigh][0]
                 prev[idx] = neigh
                 flow_future = max_output_2p(
-                    valvinfo, valves, dists, so_far + [neigh], time, prev,
-                    flow + fcur, flow_best
-                    )
+                    valvinfo,
+                    valves,
+                    dists,
+                    so_far + [neigh],
+                    time,
+                    prev,
+                    flow + fcur,
+                    flow_best,
+                )
                 flow_best = max(flow_best, flow_future, flow + fcur)
     prev[idx] = node_temp
     time[idx] = time_temp
     return flow_best
 
 
-def part2(data_path="input", max_time=26, start='AA'):
+def part2(data_path="input", max_time=26, start="AA"):
     """
     Highest possible pressure to be released in case of two workers
     """
     valvinfo = read_and_process(data_path)
     valves = list(valvinfo.keys())
-    
+
     # Create distance matrix
     dist = get_distance_matrix(valvinfo, valves)
     dstart = dist[valves.index(start)]
-    
+
     # Remove valves of zero flow from distance matrix
     for i in range(len(valves) - 1, -1, -1):
         if valvinfo[valves[i]][0] == 0:
             valves.pop(i)
             dist = np.delete(np.delete(dist, i, 0), i, 1)
-            
+
     # Find the best path from start
     fbest = 0
     for i1 in range(len(valvinfo)):
         neigh1 = list(valvinfo.keys())[i1]
         if neigh1 in valves:
             tcur1 = dstart[i1] + 1
-            print(f'{neigh1} for elephant explored. Best value so-far {fbest}')
+            print(f"{neigh1} for elephant explored. Best value so-far {fbest}")
             for i2 in range(len(valvinfo)):
                 neigh2 = list(valvinfo.keys())[i2]
                 if (neigh2 in valves) and (i1 > i2):
@@ -152,10 +159,16 @@ def part2(data_path="input", max_time=26, start='AA'):
                     fbest = max(
                         fbest,
                         max_output_2p(
-                            valvinfo, valves, dist, [neigh1, neigh2], 
-                            [tcur1, tcur2], [neigh1, neigh2], fcur, fcur
-                            )
-                        )
+                            valvinfo,
+                            valves,
+                            dist,
+                            [neigh1, neigh2],
+                            [tcur1, tcur2],
+                            [neigh1, neigh2],
+                            fcur,
+                            fcur,
+                        ),
+                    )
     return int(fbest)
 
 

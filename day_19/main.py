@@ -10,14 +10,16 @@ def read_and_process(data_path: str):
     out = []
     for x in f:
         line = x.strip().split()
-        out.append([
-            int(line[6]), 
-            int(line[12]), 
-            [int(line[18]), int(line[21])],
-            [int(line[27]), int(line[30])]
-            ])
+        out.append(
+            [
+                int(line[6]),
+                int(line[12]),
+                [int(line[18]), int(line[21])],
+                [int(line[27]), int(line[30])],
+            ]
+        )
     return out
-            
+
 
 def resources_needed(i: int, bp: list) -> list:
     """
@@ -38,10 +40,10 @@ def possible_builds(res: list, bp: list) -> list:
     Identifies if new robots can be build using available resources
     """
     can_build = [False] * 4
-    can_build[0] = (res[0] >= bp[0])
-    can_build[1] = (res[0] >= bp[1])
-    can_build[2] = ((res[0] >= bp[2][0]) and (res[1] >= bp[2][1]))
-    can_build[3] = ((res[0] >= bp[3][0]) and (res[2] >= bp[3][1]))
+    can_build[0] = res[0] >= bp[0]
+    can_build[1] = res[0] >= bp[1]
+    can_build[2] = (res[0] >= bp[2][0]) and (res[1] >= bp[2][1])
+    can_build[3] = (res[0] >= bp[3][0]) and (res[2] >= bp[3][1])
     return can_build
 
 
@@ -57,8 +59,8 @@ def maximum_robots(bp: list) -> list:
 
 
 def find_max_geode(
-        rob: list, rob_new, res: list, ava: list, bp: list,
-        t: int, max_t: int) -> int:
+    rob: list, rob_new, res: list, ava: list, bp: list, t: int, max_t: int
+) -> int:
     """
     Searches for maximal geode given blueprint
     Apply pruning rules
@@ -67,19 +69,19 @@ def find_max_geode(
     """
     if t == max_t:
         return res[-1]
-    
+
     # Collect resources
     for i in range(4):
         res[i] += rob[i]
-        
+
     # Update robots
     if rob_new is not None:
         rob[rob_new] += 1
-        
+
     # Generate list of available robots and maximum number of robots needed
     build_list = possible_builds(res, bp)
     build_max = maximum_robots(bp)
-    
+
     geo_max = 0
     for i in range(4):
         # Limit availability and number of robots
@@ -91,17 +93,17 @@ def find_max_geode(
                 ava_new = [True] * 4
                 geo_future = find_max_geode(
                     deepcopy(rob), i, res_new, ava_new, bp, t + 1, max_t
-                    )
+                )
                 geo_max = max(geo_max, geo_future)
-            
+
     # No build - limit the available robots in next iteration
     if not build_list[3]:
         ava_new = [b == 0 for b in build_list]
         geo_future = find_max_geode(
             deepcopy(rob), None, deepcopy(res), ava_new, bp, t + 1, max_t
-            )
+        )
         geo_max = max(geo_max, geo_future)
-    
+
     return geo_max
 
 
@@ -112,7 +114,7 @@ def solve(data_path="input", max_time=24) -> int:
     """
     data = read_and_process(data_path)
     max_bp = []
-    
+
     # Search for best blueprint schedule
     q_level = 0
     max_mult = 1
@@ -123,13 +125,14 @@ def solve(data_path="input", max_time=24) -> int:
             resources = [0, 0, 0, 0]
             robots = [1, 0, 0, 0]
             available = [True, True, True, True]
-            max_bp.append(find_max_geode(
-                robots, None, resources, available, 
-                blueprint, t=0, max_t=max_time
-                ))
+            max_bp.append(
+                find_max_geode(
+                    robots, None, resources, available, blueprint, t=0, max_t=max_time
+                )
+            )
             q_level += (i + 1) * max_bp[i]
             max_mult *= max_bp[i]
-        
+
     if max_time == 24:
         return q_level
     else:

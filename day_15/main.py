@@ -1,4 +1,3 @@
-
 def read_and_process(data_path: str):
     """
     Process and prepare input data
@@ -47,7 +46,7 @@ def segment_length(segments: list) -> int:
             x_low = seg[0]
             x_high = seg[1]
     return total_len + (x_high - x_low + 1)
-            
+
 
 def part1(data_path="input", y_coord=2000000):
     """
@@ -55,21 +54,21 @@ def part1(data_path="input", y_coord=2000000):
     """
     sensors, beacons = read_and_process(data_path)
     segments = []
-    
-    # Mark line segments where a beacon cannot be 
+
+    # Mark line segments where a beacon cannot be
     for i in range(len(sensors)):
         distance = get_distance(sensors[i], beacons[i])
-        segments = add_segment(sensors[i], distance, segments, y_coord)  
-        
+        segments = add_segment(sensors[i], distance, segments, y_coord)
+
     # Combined segments length
     segments_len = segment_length(sorted(segments))
-    
+
     # Count beacons on specified y coordinate
     beacon_on_y = set()
     for bc in beacons:
         if bc[1] == y_coord:
             beacon_on_y.add(bc[0])
-    
+
     return segments_len - len(beacon_on_y)
 
 
@@ -81,7 +80,7 @@ def get_edges(sens: list, dist: int) -> list:
     down = [sens[0], sens[1] + dist + 1]
     left = [sens[0] - dist - 1, sens[1]]
     right = [sens[0] + dist + 1, sens[1]]
-    
+
     return [up, right, left, down]
 
 
@@ -124,11 +123,11 @@ def get_intersection(lb: list, lf: list, lim: int) -> list:
     """
     Intersection between two lines - one forward and one backward
     """
-    
+
     # Calculate intersection of prolonged lines
     f_sum = lf[0][0] + lf[0][1]
     b_dif = lb[0][0] - lb[0][1]
-    
+
     # Check if the intersection is within bounds and included in line segments
     if (f_sum % 2) == (b_dif % 2):
         x = int((f_sum + b_dif) / 2)
@@ -140,21 +139,21 @@ def get_intersection(lb: list, lf: list, lim: int) -> list:
                         if (x > lb[0][0]) and (x < lb[1][0]):
                             return [x, y]
     return []
-        
+
 
 def part2(data_path="input", lim=4000000):
-    """ 
+    """
     Count boundary intersections and find empty beacon position
     """
     sensors, beacons = read_and_process(data_path)
-    
+
     distances = []
     edges = []
     # Calculate distances and rhombuses edges
     for i in range(len(sensors)):
         distances.append(get_distance(sensors[i], beacons[i]))
         edges.append(get_edges(sensors[i], distances[i]))
-        
+
     # Get line segments
     lines_backward = []
     lines_forward = []
@@ -167,7 +166,7 @@ def part2(data_path="input", lim=4000000):
                     lines_backward.append(lb)
                 if len(lf) > 0:
                     lines_forward.append(lf)
-    
+
     # Get line intersections
     intersections = []
     for lb in lines_backward:
@@ -180,10 +179,10 @@ def part2(data_path="input", lim=4000000):
     if len(intersections):
         return lim * intersections[0][0] + intersections[0][1]
     else:
-        print('Too many intersections!')
+        print("Too many intersections!")
 
 
 if __name__ == "__main__":
-    
+
     print(f"There are {part1()} positions which cannot contain a beacon")
     print(f"Tuning frequency of distress beacon is {part2()}")
